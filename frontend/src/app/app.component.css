@@ -1,0 +1,26 @@
+header {
+    background-color: blue;
+    color: white;
+    padding: 24px;
+}
+
+main {
+    padding: 24px;
+}
+
+mat-label {
+    padding-bottom: 16px;
+}
+
+.tax-form {
+    min-width: 50%;
+    width: fit-content;
+}
+
+.tax-full-width {
+    width: 100%;
+}
+
+.result {
+    font-size: large;
+}
