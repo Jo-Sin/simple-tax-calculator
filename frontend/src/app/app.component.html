@@ -21,16 +21,34 @@
     </form>
 
     @if (income >= 0) {
-      <p class="result">Your estimated tax on your taxable income is: ${{ getTax(rates) }}</p>
+      <p class="result">Estimated tax on your taxable income is: ${{ calculateTax(rates) }}</p>
     }
     @else {
       <p>Please enter a valid amount for your income</p>
     }
+
     <br />
-    <p>
+    {{ updateTable(rates) }}
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 tax-form">
+
+    <ng-container matColumnDef="taxBracket">
+      <th mat-header-cell *matHeaderCellDef>Tax Bracket</th>
+      <td mat-cell *matCellDef="let element"> {{element.taxBracket}} </td>
+    </ng-container>
+    <ng-container matColumnDef="taxable">
+      <th mat-header-cell *matHeaderCellDef>Taxable Amount</th>
+      <td mat-cell *matCellDef="let element"> {{element.taxable}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['taxBracket', 'taxable']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['taxBracket', 'taxable'];"></tr>
+  </table>
+  <br />
+
+    <p class="extra-text">
       Here, we assume that you were a resident for the whole year for which tax is calculated. <br />
       This calculation was performed based on the info provided by 
-      <a href="https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents" target="_blank">the ATO</a>
+      <a href="https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents" target="_blank">the ATO</a>.
     </p>
 
   }

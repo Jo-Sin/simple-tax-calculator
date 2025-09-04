@@ -24,3 +24,6 @@ mat-label {
 .result {
     font-size: large;
 }
+.extra-text {
+    font-size: small;
+}
