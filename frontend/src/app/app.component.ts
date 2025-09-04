@@ -4,7 +4,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { DataService } from './data.service';
+import { DataService, TaxRate } from './data.service';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  rates$!: Observable<any>;
+  rates$!: Observable<TaxRate[]>;
   private dataService = inject(DataService);
   constructor() {
     effect(() => {
@@ -27,21 +27,16 @@ export class AppComponent {
   selectedYear = '2025–26';
   income: number = 1;
   
-  getTax(rates: any) {
+  getTax(rates: TaxRate[]) {
     let yearRates = rates.find((x: any) => x.year == this.selectedYear);
     let centTax = 0;
-    if (yearRates.rates[0].threshold >= this.income)
-      return 0;
-    for (let index in yearRates.rates) {
-      let i = Number(index);
-      if (i === 0)
-        continue;
-      let item = yearRates.rates[i];
-      let prevItem = yearRates.rates[i - 1];
-      let gap = (item.threshold == -1 || this.income < item.threshold ? this.income : item.threshold) - prevItem.threshold;
-      centTax += gap * item.rate;
-      if (this.income < item.threshold)
-        break;
+    if (yearRates) {
+      for (let item of yearRates?.brackets) {
+        if ((item.max === -1) || ((item.min <= this.income) && (this.income <= item.max))) {
+          centTax = Math.round(item.base * 100 + (this.income - item.min + 1) * item.rate);
+          break;
+        }
+      }
     }
     return (centTax/100).toFixed(2);
   }
